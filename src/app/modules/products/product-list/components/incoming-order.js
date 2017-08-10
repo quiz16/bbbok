@@ -4,13 +4,8 @@ import { push } from 'react-router-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
-import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
-import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
 import Badge from 'material-ui/Badge';
 import {
 	List,
@@ -18,7 +13,9 @@ import {
 } from 'material-ui/List';
 
 import {
-	getIncomingOrders
+	getIncomingOrders,
+	getOrderDetails,
+	confirmOrder
 } from '../actions';
 
 export class IncomingOrder extends React.Component {
@@ -28,15 +25,6 @@ export class IncomingOrder extends React.Component {
 
 	componentWillMount () {
 		this.setState( {
-			'name'             : '',
-			'quantity'         : '',
-			'price'            : '',
-			'category'         : '',
-			'change_by'        : '',
-			'last_updated'     : null,
-			'openSnack'        : false,
-			'autoHideDuration' : 4000,
-			'tempName'         : '',
 			'showOrder' : {}
 		} );
 
@@ -44,14 +32,6 @@ export class IncomingOrder extends React.Component {
 	}
 
 	componentWillReceiveProps ( nextProps ) {
-		if ( nextProps.status === 'success' ) {
-			this.setState( {
-				'name'      : '',
-				'quantity'  : '',
-				'price'     : '',
-				'openSnack' : true
-			} );
-		}
 	}
 
 	onChange ( key ) {
@@ -64,37 +44,69 @@ export class IncomingOrder extends React.Component {
 		}
 	}
 
-	handleRequestClose () {
-		this.setState( {
-			'openSnack' : false
-		} );
+	showOrderDetails ( key ) {
+		let state = _.cloneDeep( this.state );
+
+		state.showOrder[ key ] = !state.showOrder[ key ];
+
+		if ( !( this.props.details[ key ] || [] ).length ) {
+			this.props.getOrderDetails( key );
+		}
+
+		this.setState( state )
 	}
 
-	showOrderDetails ( key ) {
-		console.log( this );
+	handleConfirmOrder ( key ) {
+		/* TODO: add confirm order */
 	}
 
 	render () {
 		let orders = [];
-		let nestedItems = []
+		let styles = {
+			'badge' : {
+				'padding'   : '16px 24px 12px 12px',
+				'marginTop' : '4px'
+			},
+			'paper' : {
+				'padding' : '20px'
+			}
+		};
 
 		if ( this.props.orders.node_ ) {
 			this.props.orders.forEach( snap => {
 				let data = snap.val();
 				let primaryText = 'Order ' + data.date_added;
+				let rightBtn = <IconButton
+					iconClassName="material-icons"
+					tooltip="Confirm Order"
+					tooltipPosition="top-center"
+					onTouchTap={ () => this.handleConfirmOrder( snap.key ) }>thumb_up</IconButton>;
+				let nestedItems = [];
 
+				( this.props.details[ snap.key ] || [] ).map( ( item, index ) => {
+					nestedItems.push( <ListItem key={ index }
+						primaryText={ item.name }
+						rightIcon={ <Badge
+							badgeContent={ item.quantity }
+							secondary={ true } style={ styles.badge }>
+								<i className="material-icons">shopping_cart</i>
+							</Badge>
+						} />
+					);
+				} );
 				orders.push(
 					<ListItem
 						key={ snap.key }
 						primaryText={ primaryText }
 						open={ this.state.showOrder[ snap.key ] }
 						nestedItems={ nestedItems }
+						rightIconButton={ rightBtn }
 						onTouchTap={ () => this.showOrderDetails( snap.key ) } />
 				);
 			} );
 		}
 		return (
-			<Paper zDepth={2}>
+			<Paper zDepth={2} style={ styles.paper }>
 				<List>{ orders }</List>
 			</Paper>
 		);
@@ -103,7 +115,8 @@ export class IncomingOrder extends React.Component {
 
 function mapsStateToProps ( state ) {
 	return {
-		'orders' : state.productListReducer.orders
+		'orders'  : state.productListReducer.orders,
+		'details' : state.productListReducer.details
 	};
 }
 
@@ -113,12 +126,12 @@ function mapsDispatchToProps ( dispatch ) {
 			dispatch( getIncomingOrders() );
 		},
 
-		goToEdit ( key ) {
-			dispatch( push( '/products/edit/' + key ) );
+		getOrderDetails ( key ) {
+			dispatch( getOrderDetails( key ) );
 		},
 
-		addOrder ( key ) {
-			dispatch( addOrder( key ) );
+		confirmOrder ( key ) {
+			dispatch( confirmOrder( key ) );
 		}
 	};
 }

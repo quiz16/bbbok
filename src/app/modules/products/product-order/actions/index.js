@@ -29,13 +29,12 @@ export function addOrder ( order, date_added ) {
 
 			let key = await resources.addOrder( order );
 
-			console.log( date_added );
 			await resources.addOrderIndex( { date_added }, key );
 
-			//dispatch( {
-				//'type' : ADD_ORDER,
-				//'status' : 'success'
-			//} );
+			dispatch( {
+				'type' : ADD_ORDER,
+				'status' : 'success'
+			} );
 		} catch ( error ) {
 			/* Do something with error */
 		}

@@ -21,7 +21,6 @@ export default {
 		return new Promise ( resolve => {
 			const ref = firebase.database().ref( 'Products' );
 
-			console.log( indexData );
 			ref.child( 'Order-index' ).child( key ).set( indexData );
 			resolve( 'Success' );
 		} );

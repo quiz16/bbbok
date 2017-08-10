@@ -49,17 +49,6 @@ export class ListProduct extends React.Component {
 		this.props.getProducts();
 	}
 
-	componentWillReceiveProps ( nextProps ) {
-		if ( nextProps.status === 'success' ) {
-			this.setState( {
-				'name'      : '',
-				'quantity'  : '',
-				'price'     : '',
-				'openSnack' : true
-			} );
-		}
-	}
-
 	onChange ( key ) {
 		return ( e ) => {
 			let state = _.cloneDeep( this.state );

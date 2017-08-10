@@ -1,6 +1,7 @@
 import {
 	GET_PRODUCTS,
-	GET_INCOMING_ORDERS
+	GET_INCOMING_ORDERS,
+	GET_ORDER_DETAILS
 } from '../../../../constants';
 import * as firebase from 'firebase';
 
@@ -40,49 +41,45 @@ export function getIncomingOrders () {
 	};
 }
 
-function checkOrderExist ( key ) {
-	return new Promise ( ( resolve, reject ) => {
-		const ref = firebase.database().ref( 'Products' );
-		let orderAddRef = ref.child( 'Order-add' );
-
-		orderAddRef.child( key ).once( 'value' )
-			.then( snap => {
-				if ( snap.exists() ) {
-					resolve( snap.val().quantity );
-				}
-				reject();
-			}, () => {
-				reject();
-			} );
-	} );
-}
-
-export function addOrder ( key ) {
+export function getOrderDetails( key ) {
 	return async dispatch => {
 		try {
-			const ref = firebase.database().ref( 'Products' );
+			const ref   = firebase.database().ref( 'Products' );
+			let details = {};
 
-			let quantity = await checkOrderExist( key );
+			ref.child( 'Order-add/' + key ).once( 'value', snap => {
+				let keys    = _.keys( snap.val() );
+				let promise = [];
 
-			console.log( quantity );
+				details[ key ] = [];
 
-					//orderAddRef.once( 'value' ).then( snap => {
-						//console.log( snap.exists() );
-					//} );
-			ref.child( 'Index/' + key ).once( 'value' )
-				.then( snap => {
-					let orderAddRef = ref.child( 'Order-add' );
+				keys.forEach( ( indexKey, index ) => {
+					promise.push( ref.child( 'Index/' + indexKey).once( 'value' ) );
+				} )
 
-					//orderAddRef.once( 'value' ).then( snap => {
-						//if ( snap.hasChild( key ) ) {
-						//}
-					//} );
-					//orderAddRef.child( key ).set( {
-						//'name' : snap.val().name,
-						//'quantity' : 1
-					//} );
+				Promise.all( promise ).then( response => {
+					response.map( ( dataSnap, index ) => {
+						details[ key ].push( {
+							'quantity' : snap.val()[ keys[ index ] ],
+							'name' : dataSnap.val().name
+						} );
+					} );
+					dispatch( {
+						'type' : GET_ORDER_DETAILS,
+						details
+					} );
 				} );
+			} );
+		} catch ( error ) {
+			/* Do something with error */
+		}
+	};
+}
 
+export function confirmOrder ( key ) {
+	return async dispatch => {
+		try {
+			/* TODO: add confirm order */
 		} catch ( error ) {
 			/* Do something with error */
 		}

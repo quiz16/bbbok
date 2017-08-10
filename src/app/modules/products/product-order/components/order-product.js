@@ -1,15 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
 
 import TextField from 'material-ui/TextField';
-import _ from 'lodash';
 import Paper from 'material-ui/Paper';
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import { pinkA200 } from 'material-ui/styles/colors';
 import {
@@ -120,12 +119,13 @@ export class AddProduct extends React.Component {
 
 		if ( this.props.products.node_ ) {
 			this.props.products.forEach( snap => {
-				let data = snap.val();
+				let data     = snap.val();
 				let cartIcon = <IconButton
 					key={ snap.key }
 					iconStyle={ this.state.showQuantity[ snap.key ] ? { 'color' : pinkA200 } : {} }
 					iconClassName="material-icons"
 					onTouchTap={ () => this.handleAddToCart( snap.key ) }>add_shopping_cart</IconButton>;
+
 				let displaySecond = [ <ListItem key={ snap.key } disabled={ true }>
 					<TextField
 						hintText="Quantity"
@@ -154,6 +154,7 @@ export class AddProduct extends React.Component {
 			category.push( <MenuItem key={ index } value={ index } primaryText={ item } /> );
 
 		} );
+
 		return (
 			<div className="product-order-wrapper">
 				<Paper zDepth={2}>

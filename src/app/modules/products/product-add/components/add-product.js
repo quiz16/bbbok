@@ -25,7 +25,8 @@ export class AddProduct extends React.Component {
 		this.setState( {
 			'name'             : '',
 			'quantity'         : '',
-			'price'            : '',
+			'retail'           : '',
+			'reseller'         : '',
 			'category'         : null,
 			'change_by'        : '',
 			'last_updated'     : null,
@@ -40,7 +41,8 @@ export class AddProduct extends React.Component {
 			this.setState( {
 				'name'      : '',
 				'quantity'  : '',
-				'price'     : '',
+				'reseller'  : '',
+				'retail'    : '',
 				'category'  : null,
 				'openSnack' : true
 			} );
@@ -49,13 +51,14 @@ export class AddProduct extends React.Component {
 
 	handleAdd () {
 		let body = {
-			'name'         : this.state.name,
-			'quantity'     : this.state.quantity,
-			'price'        : this.state.price,
-			'category'     : this.state.category,
-			'change_by'    : '13sdf', // user key
-			'last_updated' : moment().format( 'YYYY-MM-DD HH:mm' ),
-			'date_added'   : moment().format( 'YYYY-MM-DD HH:mm' )
+			'name'           : this.state.name,
+			'quantity'       : this.state.quantity,
+			'retail'         : this.state.retail,
+			'reseller_price' : this.state.reseller,
+			'category'       : this.state.category,
+			'change_by'      : '13sdf', // user key
+			'last_updated'   : moment().format( 'YYYY-MM-DD HH:mm' ),
+			'date_added'     : moment().format( 'YYYY-MM-DD HH:mm' )
 		};
 
 		this.setState( {
@@ -110,7 +113,9 @@ export class AddProduct extends React.Component {
 					<div className="product-form-wrapper">
 						<TextField hintText="Name" value={ this.state.name } onChange={ this.onChange( 'name' ) } fullWidth={ true } underlineShow={ false } />
 						<Divider />
-						<TextField hintText="Price" value={ this.state.price } onChange={ this.onChange( 'price' ) } fullWidth={ true } underlineShow={ false } />
+						<TextField hintText="Reseller's Price" value={ this.state.reseller } onChange={ this.onChange( 'reseller' ) } fullWidth={ true } underlineShow={ false } />
+						<Divider />
+						<TextField hintText="Retail Price" value={ this.state.retail } onChange={ this.onChange( 'retail' ) } fullWidth={ true } underlineShow={ false } />
 						<Divider />
 						<SelectField floatingLabelText="Category" value={ this.state.category } onChange={ this.handleCategory.bind( this ) } underlineStyle={ styles.selectField.underline } style={ styles.selectField.style }>
 							{ category }

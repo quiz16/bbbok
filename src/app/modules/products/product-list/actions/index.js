@@ -61,7 +61,8 @@ export function getOrderDetails( key ) {
 					response.map( ( dataSnap, index ) => {
 						details[ key ].push( {
 							'quantity' : snap.val()[ keys[ index ] ],
-							'name' : dataSnap.val().name
+							'name' : dataSnap.val().name,
+							'key' : keys[ index ]
 						} );
 					} );
 					dispatch( {
@@ -76,9 +77,11 @@ export function getOrderDetails( key ) {
 	};
 }
 
-export function confirmOrder ( key ) {
+export function confirmOrder ( key, body ) {
 	return async dispatch => {
 		try {
+			firebase.database().ref( 'Products' ).child( 'Order-done' ).child( key ).set( body );
+			firebase.database().ref( 'Products' ).child( 'Order-index' ).child( key ).remove();
 			/* TODO: add confirm order */
 		} catch ( error ) {
 			/* Do something with error */

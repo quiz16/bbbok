@@ -19,6 +19,15 @@ export function addProduct ( body ) {
 				'last_updated' : body.last_updated
 			}, key );
 
+			await resources.addProductHistory( {
+				'name'           : body.name,
+				'quantity'       : body.quantity,
+				'retail'         : body.retail,
+				'reseller_price' : body.reseller_price,
+				'initiator'      : 'product_add',
+				'date_added'     : body.date_added
+			}, key );
+
 			dispatch( {
 				'type'   : ADD_PRODUCT,
 				'status' : 'success'

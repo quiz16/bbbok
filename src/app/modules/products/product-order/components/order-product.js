@@ -54,7 +54,7 @@ export class AddProduct extends React.Component {
 		let state = _.cloneDeep( self.state );
 		let keys  = _.keys( state.isAdded );
 		let order = {};
-		let date  = moment().format( 'YYYY-MM-DD HH : mm' );
+		let date  = moment().format( 'YYYY-MM-DD HH:mm' );
 
 		keys.map( key => {
 			if ( !state.quantity[ key ] ) {

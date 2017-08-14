@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import Badge from 'material-ui/Badge';
+import Snackbar from 'material-ui/Snackbar';
 import {
 	List,
 	ListItem
@@ -25,7 +26,10 @@ export class IncomingOrder extends React.Component {
 
 	componentWillMount () {
 		this.setState( {
-			'showOrder' : {}
+			'showOrder'        : {},
+			'openSnack'        : false,
+			'messageSnack'     : '',
+			'autoHideDuration' : 4000,
 		} );
 
 		this.props.getIncomingOrders();
@@ -56,8 +60,26 @@ export class IncomingOrder extends React.Component {
 		this.setState( state )
 	}
 
-	handleConfirmOrder ( key ) {
-		/* TODO: add confirm order */
+	handleConfirmOrder ( snap ) {
+		if ( this.props.details[ snap.key ] ) {
+			let obj = {
+				'date_confirmed' : moment().format( 'YYYY-MM-DD HH:mm' )
+			};
+
+			let body = _.merge( obj, snap.val() );
+
+			return this.props.confirmOrder( snap.key, body );
+		}
+		return this.setState( {
+			'openSnack'    : true,
+			'messageSnack' : 'Please check the items for Order ' + snap.val().date_added + ' first'
+		} );
+	}
+
+	handleRequestClose () {
+		this.setState( {
+			'openSnack' : false
+		} );
 	}
 
 	render () {
@@ -80,7 +102,7 @@ export class IncomingOrder extends React.Component {
 					iconClassName="material-icons"
 					tooltip="Confirm Order"
 					tooltipPosition="top-center"
-					onTouchTap={ () => this.handleConfirmOrder( snap.key ) }>thumb_up</IconButton>;
+					onTouchTap={ () => this.handleConfirmOrder( snap ) }>done_all</IconButton>;
 				let nestedItems = [];
 
 				( this.props.details[ snap.key ] || [] ).map( ( item, index ) => {
@@ -108,6 +130,11 @@ export class IncomingOrder extends React.Component {
 		return (
 			<Paper zDepth={2} style={ styles.paper }>
 				<List>{ orders }</List>
+				<Snackbar
+					open={ this.state.openSnack }
+					message={ this.state.messageSnack }
+					autoHideDuration={ this.state.autoHideDuration }
+					onRequestClose={ this.handleRequestClose.bind( this ) } />
 			</Paper>
 		);
 	}
@@ -130,8 +157,8 @@ function mapsDispatchToProps ( dispatch ) {
 			dispatch( getOrderDetails( key ) );
 		},
 
-		confirmOrder ( key ) {
-			dispatch( confirmOrder( key ) );
+		confirmOrder ( key, body ) {
+			dispatch( confirmOrder( key, body ) );
 		}
 	};
 }

@@ -39,6 +39,15 @@ export default {
 			ref.child( 'Category' ).child( holder[ prodCat ] ).child( key ).set( catData );
 			resolve( 'Success' );
 		} );
+	},
+
+	addProductHistory ( histData, key ) {
+		return new Promise ( resolve => {
+			const ref = firebase.database().ref( 'Products' );
+
+			ref.child( 'History/' + key ).push( histData );
+			resolve( 'Success' );
+		} );
 	}
 
 };

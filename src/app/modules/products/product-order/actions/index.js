@@ -1,7 +1,8 @@
 import * as firebase from 'firebase';
 import {
 	GET_PRODUCTS,
-	ADD_ORDER
+	ADD_ORDER,
+	GET_PRODUCT_DETAILS_ORDER
 } from '../../../../constants';
 import resources from '../resources';
 
@@ -23,13 +24,16 @@ export function getProducts () {
 	};
 }
 
-export function addOrder ( order, date_added ) {
+export function addOrder ( order, data ) {
 	return async dispatch => {
 		try {
 
 			let key = await resources.addOrder( order );
 
-			await resources.addOrderIndex( { date_added }, key );
+			await resources.addOrderIndex( {
+				'total_price' : data.total,
+				'date_added'  : data.date
+			}, key );
 
 			dispatch( {
 				'type' : ADD_ORDER,
@@ -55,6 +59,24 @@ export function saveQuantity ( body ) {
 			ref.update( updates );
 		} catch ( error ) {
 			/* Do something with errror */
+		}
+	};
+}
+
+export function getProductDetails ( key ) {
+	return async dispatch => {
+		try {
+			const ref = firebase.database().ref( 'Products' ).child( 'List' ).child( key );
+
+			ref.once( 'value' ).then( snap => {
+				dispatch( {
+					'type'    : GET_PRODUCT_DETAILS_ORDER,
+					'details' : snap.val(),
+					key
+				} );
+			} );
+		} catch ( error ) {
+			/* Do something with error */
 		}
 	};
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
+import accounting from 'accounting';
 
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
@@ -11,6 +12,8 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import { pinkA200 } from 'material-ui/styles/colors';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import {
 	List,
 	ListItem
@@ -18,7 +21,8 @@ import {
 
 import {
 	getProducts,
-	addOrder
+	addOrder,
+	getProductDetails
 } from '../actions';
 export class AddProduct extends React.Component {
 	constructor () {
@@ -34,6 +38,8 @@ export class AddProduct extends React.Component {
 			'showQuantity'     : {},
 			'quantity'         : {},
 			'isAdded'          : {},
+			'openDialog'       : false,
+			'orderSummary'     : '',
 			'error'            : {}
 
 		} );
@@ -44,17 +50,19 @@ export class AddProduct extends React.Component {
 	componentWillReceiveProps ( nextProps ) {
 		if ( nextProps.status === 'success' ) {
 			this.setState( {
-				'openSnack' : true
+				'openSnack'  : true,
+				'openDialog' : false
 			} );
 		}
 	}
 
 	handleAdd () {
-		let self  = this;
-		let state = _.cloneDeep( self.state );
-		let keys  = _.keys( state.isAdded );
-		let order = {};
-		let date  = moment().format( 'YYYY-MM-DD HH:mm' );
+		let self         = this;
+		let state        = _.cloneDeep( self.state );
+		let keys         = _.keys( state.isAdded );
+		let order        = {};
+		let total        = 0;
+		let orderSummary = [];
 
 		keys.map( key => {
 			if ( !state.quantity[ key ] ) {
@@ -62,13 +70,41 @@ export class AddProduct extends React.Component {
 				self.setState( state );
 				return;
 			}
+			const details   = this.props.details[ key ];
+			const price     = +state.quantity[ key ] * details.retail;
+			const textPrice = <span className="product-dialog-price">Php { accounting.format( price ) }</span>;
+
 			delete state.error[ key ]
 			self.setState( state );
 
-			order[ key ] = state.quantity[ key ];
+			order[ key ] = {
+				'name'     : details.name,
+				'quantity' : state.quantity[ key ]
+			};
+
+			total += price;
+
+			orderSummary.push(
+				<ListItem
+					key={ key }
+					primaryText={ details.name }
+					rightIcon={ textPrice } />
+			);
 		} );
 
-    this.props.addOrder( order, date );
+		orderSummary.push(
+			<ListItem
+				key={ 0 }
+				primaryText={ 'Total' }
+				rightIcon={ <span className="product-dialog-price">Php { accounting.format( total ) }</span> } />
+		);
+
+		this.setState( {
+			'openDialog' : true,
+			orderSummary,
+			order,
+			total
+		} );
 	}
 
 	handleChangeQuantity ( key ) {
@@ -93,10 +129,26 @@ export class AddProduct extends React.Component {
 		state.showQuantity[ key ] = !state.showQuantity[ key ];
 		state.isAdded[ key ]      = true;
 		this.setState( state );
+		this.props.getProductDetails( key );
+	}
+
+	handleDialogClose () {
+		this.setState( {
+			'openDialog' : false
+		} );
+	}
+
+	handleDialogConfirm () {
+		let date = moment().format( 'YYYY-MM-DD HH:mm' );
+
+		this.props.addOrder( this.state.order, {
+			'total' : this.state.total,
+			date
+		} );
 	}
 
 	render () {
-		let styles = {
+		const styles = {
 			'textField' : {
 				'label' : {
 					'bottom' : '-2px'
@@ -112,6 +164,18 @@ export class AddProduct extends React.Component {
 				}
 			}
 		};
+
+		const actions = [
+			<FlatButton
+				label="Cancel"
+				primary={ true }
+				onTouchTap={ this.handleDialogClose.bind( this ) } />,
+			<FlatButton
+				label="Submit"
+				primary={ true }
+				keyboardFocused={ true }
+				onTouchTap={ this.handleDialogConfirm.bind( this ) } />
+		];
 
 		let messageSnack = 'Order Added';
 		let products     = [];
@@ -168,6 +232,13 @@ export class AddProduct extends React.Component {
 					message={ messageSnack }
 					autoHideDuration={ this.state.autoHideDuration }
 					onRequestClose={ this.handleRequestClose.bind( this ) } />
+				<Dialog
+					title="Order Summary"
+					actions={ actions }
+					open={ this.state.openDialog }
+					onRequestClose={ this.handleDialogClose.bind( this ) }>
+						<List>{ this.state.orderSummary }</List>
+					</Dialog>
 			</div>
 		);
 	}
@@ -176,7 +247,8 @@ export class AddProduct extends React.Component {
 function mapsStateToProps ( state ) {
 	return {
 		'products' : state.productOrderReducer.products,
-		'status' : state.productOrderReducer.status
+		'details'  : state.productOrderReducer.details,
+		'status'   : state.productOrderReducer.status
 	};
 }
 
@@ -188,6 +260,10 @@ function mapsDispatchToProps ( dispatch ) {
 
 		addOrder ( order, date ) {
 			dispatch( addOrder( order, date ) );
+		},
+
+		getProductDetails ( key ) {
+			dispatch( getProductDetails( key ) );
 		}
 	};
 }

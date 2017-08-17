@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import moment from 'moment';
+import { dateFormat } from '../../../../helper';
 
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
@@ -62,7 +62,7 @@ export class IncomingOrder extends React.Component {
 	handleConfirmOrder ( snap ) {
 		if ( this.props.details[ snap.key ] ) {
 			let obj = {
-				'date_confirmed' : moment().format( 'YYYY-MM-DD HH:mm' )
+				'date_confirmed' : dateFormat()
 			};
 
 			let body = Object.assign( obj, snap.val() );

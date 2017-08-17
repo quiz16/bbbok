@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import numberFormat from '../../../../helper';
+import {
+	numberFormat,
+	dateFormat
+} from '../../../../helper';
 
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
@@ -140,7 +142,7 @@ export class AddProduct extends React.Component {
 	}
 
 	handleDialogConfirm () {
-		let date = moment().format( 'YYYY-MM-DD HH:mm' );
+		let date = dateFormat();
 
 		this.props.addOrder( this.state.order, {
 			'total' : this.state.total,

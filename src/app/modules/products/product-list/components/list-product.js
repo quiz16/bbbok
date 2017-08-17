@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import moment from 'moment';
 
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';

@@ -10,11 +10,13 @@ let isProd = ENV === 'build';
 module.exports = function webpackConf () {
 	let config = {
 		'context' : path.resolve( 'src' ),
-		'entry' : [ 'babel-polyfill', '../index.html', './app/index.js' ],
+		'entry' : {
+			'main' : [ 'babel-polyfill', '../index.html', './app/index.js' ],
+			'vendor' : [ 'lodash', 'react', 'react-redux', 'react-router', 'react-router-redux' ]
+		},
 		'output' : {
-			'path' : __dirname + '/dist',
-			'publicPath' : '/dist',
-			'filename' : 'bundle.js'
+			'path'     : __dirname + '/dist',
+			'filename' : '[name].bundle.js'
 		},
 		'module' : {
 			'loaders' : [
@@ -58,6 +60,9 @@ module.exports = function webpackConf () {
 	};
 
 	config.plugins = !isProd ? [] : [
+		new webpack.optimize.CommonsChunkPlugin( {
+			'name' : 'vendor'
+		} ),
 		new webpack.DefinePlugin( {
 			'process.env': {
 				'NODE_ENV': JSON.stringify( 'production' ),
@@ -82,7 +87,6 @@ module.exports = function webpackConf () {
 			'comments' : false,
 			'sourceMap' : true
 		} ),
-		new webpack.IgnorePlugin( /^\.\/locale$/, /moment$/ ),
 		new webpack.NoEmitOnErrorsPlugin()
 	];
 

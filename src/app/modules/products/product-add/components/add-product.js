@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import { dateFormat } from '../../../../helper';
 
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
@@ -56,8 +56,8 @@ export class AddProduct extends React.Component {
 			'reseller_price' : this.state.reseller,
 			'category'       : this.state.category,
 			'change_by'      : '13sdf', // user key
-			'last_updated'   : moment().format( 'YYYY-MM-DD HH:mm' ),
-			'date_added'     : moment().format( 'YYYY-MM-DD HH:mm' )
+			'last_updated'   : dateFormat(),
+			'date_added'     : dateFormat()
 		};
 
 		this.setState( {

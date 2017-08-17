@@ -1,6 +1,4 @@
-import * as firebase from 'firebase';
 import '../../../../config';
-import _ from 'lodash';
 
 export default {
 

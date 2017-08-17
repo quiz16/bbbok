@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import _ from 'lodash';
 
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
@@ -70,7 +69,7 @@ export class AddProduct extends React.Component {
 
 	onChange ( key ) {
 		return ( e ) => {
-			let state = _.cloneDeep( this.state );
+			let state = Object.assign( {}, this.state );
 
 			state[ key ] = e.target.value;
 

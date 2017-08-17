@@ -1,6 +1,4 @@
-import * as firebase from 'firebase';
 import '../../../../config';
-import _ from 'lodash';
 
 export default {
 
@@ -34,7 +32,7 @@ export default {
 				'1' : 'Body'
 			};
 
-			_.omit( catData, [ 'category' ] );
+			delete catData.category;
 
 			ref.child( 'Category' ).child( holder[ prodCat ] ).child( key ).set( catData );
 			resolve( 'Success' );

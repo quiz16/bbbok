@@ -1,9 +1,7 @@
 import React from 'react';
 import { Router, Route, browserHistory, IndexRoute, IndexRedirect } from 'react-router';
-import { createBrowserHistory } from 'history';
 import { syncHistoryWithStore } from 'react-router-redux';
 import store from './store';
-import auth from './auth';
 
 const history = syncHistoryWithStore( browserHistory, store() );
 

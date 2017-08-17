@@ -1,5 +1,3 @@
-import * as firebase from 'firebase';
-
 let config = {
 	'apiKey'            : 'AIzaSyDTqgNi67TNqyjAxi_paWu_0GOKGfkFnUk',
 	'authDomain'        : 'bbbok-b0726.firebaseapp.com',

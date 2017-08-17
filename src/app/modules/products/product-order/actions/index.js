@@ -1,4 +1,3 @@
-import * as firebase from 'firebase';
 import {
 	GET_PRODUCTS,
 	ADD_ORDER,

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import moment from 'moment';
-import _ from 'lodash';
 
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
@@ -40,7 +39,7 @@ export class IncomingOrder extends React.Component {
 
 	onChange ( key ) {
 		return ( e ) => {
-			let state = _.cloneDeep( this.state );
+			let state = Object.assign( {}, this.state );
 
 			state[ key ] = e.target.value;
 
@@ -49,7 +48,7 @@ export class IncomingOrder extends React.Component {
 	}
 
 	showOrderDetails ( key ) {
-		let state = _.cloneDeep( this.state );
+		let state = Object.assign( {}, this.state );
 
 		state.showOrder[ key ] = !state.showOrder[ key ];
 
@@ -66,7 +65,7 @@ export class IncomingOrder extends React.Component {
 				'date_confirmed' : moment().format( 'YYYY-MM-DD HH:mm' )
 			};
 
-			let body = _.merge( obj, snap.val() );
+			let body = Object.assign( obj, snap.val() );
 
 			return this.props.confirmOrder( snap.key, body );
 		}
@@ -94,7 +93,7 @@ export class IncomingOrder extends React.Component {
 			}
 		};
 
-		if ( this.props.orders.node_ ) {
+		if ( Object.keys( this.props.orders ).length ) {
 			this.props.orders.forEach( snap => {
 				let data = snap.val();
 				let primaryText = 'Order ' + data.date_added;

@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import _ from 'lodash';
-import accounting from 'accounting';
+import numberFormat from '../../../../helper';
 
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
@@ -58,8 +57,8 @@ export class AddProduct extends React.Component {
 
 	handleAdd () {
 		let self         = this;
-		let state        = _.cloneDeep( self.state );
-		let keys         = _.keys( state.isAdded );
+		let state        = Object.assign( {}, self.state );
+		let keys         = Object.keys( state.isAdded );
 		let order        = {};
 		let total        = 0;
 		let orderSummary = [];
@@ -72,7 +71,7 @@ export class AddProduct extends React.Component {
 			}
 			const details   = this.props.details[ key ];
 			const price     = +state.quantity[ key ] * details.retail;
-			const textPrice = <span className="product-dialog-price">Php { accounting.format( price ) }</span>;
+			const textPrice = <span className="product-dialog-price">Php { numberFormat( price ) }</span>;
 
 			delete state.error[ key ]
 			self.setState( state );
@@ -92,24 +91,26 @@ export class AddProduct extends React.Component {
 			);
 		} );
 
-		orderSummary.push(
-			<ListItem
-				key={ 0 }
-				primaryText={ 'Total' }
-				rightIcon={ <span className="product-dialog-price">Php { accounting.format( total ) }</span> } />
-		);
+		if ( !Object.keys( state.error ).length ) {
+			orderSummary.push(
+				<ListItem
+					key={ 0 }
+					primaryText={ 'Total' }
+					rightIcon={ <span className="product-dialog-price">Php { numberFormat( total ) }</span> } />
+			);
 
-		this.setState( {
-			'openDialog' : true,
-			orderSummary,
-			order,
-			total
-		} );
+			this.setState( {
+				'openDialog' : true,
+				orderSummary,
+				order,
+				total
+			} );
+		}
 	}
 
 	handleChangeQuantity ( key ) {
 		return ( e ) => {
-			let state = _.cloneDeep( this.state );
+			let state = Object.assign( {}, this.state );
 
 			state.quantity[ key ] = e.target.value;
 
@@ -124,7 +125,7 @@ export class AddProduct extends React.Component {
 	}
 
 	handleAddToCart ( key ) {
-		let state = _.cloneDeep( this.state );
+		let state = Object.assign( {}, this.state );
 
 		state.showQuantity[ key ] = !state.showQuantity[ key ];
 		state.isAdded[ key ]      = true;
@@ -181,7 +182,7 @@ export class AddProduct extends React.Component {
 		let products     = [];
 		let category     = [];
 
-		if ( this.props.products.node_ ) {
+		if ( Object.keys( this.props.products ).length ) {
 			this.props.products.forEach( snap => {
 				let data     = snap.val();
 				let cartIcon = <IconButton

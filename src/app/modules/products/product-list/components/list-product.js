@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import moment from 'moment';
-import _ from 'lodash';
 
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
@@ -51,7 +50,7 @@ export class ListProduct extends React.Component {
 
 	onChange ( key ) {
 		return ( e ) => {
-			let state = _.cloneDeep( this.state );
+			let state = Object.assign( {}, this.state );
 
 			state[ key ] = e.target.value;
 
@@ -78,7 +77,7 @@ export class ListProduct extends React.Component {
 			headers.push( <TableHeaderColumn key={ index }>{ item }</TableHeaderColumn> );
 		} );
 
-		if ( this.props.products.node_ ) {
+		if ( Object.keys( this.props.products ).length ) {
 			this.props.products.forEach( snap => {
 				let data = snap.val();
 

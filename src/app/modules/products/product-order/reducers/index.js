@@ -3,8 +3,7 @@ import {
 	ADD_ORDER,
 	GET_PRODUCT_DETAILS_ORDER
 } from '../../../../constants';
-import _ from 'lodash';
-// Store for reducer
+
 const productOrderState = {
 	'products' : {},
 	'status'   : '',

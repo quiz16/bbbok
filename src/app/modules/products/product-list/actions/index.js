@@ -3,7 +3,6 @@ import {
 	GET_INCOMING_ORDERS,
 	GET_ORDER_DETAILS
 } from '../../../../constants';
-import * as firebase from 'firebase';
 
 export function getProducts () {
 	return async dispatch => {

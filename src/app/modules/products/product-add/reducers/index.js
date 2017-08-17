@@ -1,8 +1,7 @@
 import {
 	ADD_PRODUCT,
 } from '../../../../constants';
-import _ from 'lodash';
-// Store for reducer
+
 const productAddState = {
 	'status' : 'initial'
 };

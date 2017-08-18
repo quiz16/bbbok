@@ -39,7 +39,7 @@ export class IncomingOrder extends React.Component {
 
 	onChange ( key ) {
 		return ( e ) => {
-			let state = Object.assign( {}, this.state );
+			let state = JSON.parse( JSON.stringify( this.state ) );
 
 			state[ key ] = e.target.value;
 
@@ -48,7 +48,7 @@ export class IncomingOrder extends React.Component {
 	}
 
 	showOrderDetails ( key ) {
-		let state = Object.assign( {}, this.state );
+		let state = JSON.parse( JSON.stringify( this.state ) );
 
 		state.showOrder[ key ] = !state.showOrder[ key ];
 
@@ -95,16 +95,18 @@ export class IncomingOrder extends React.Component {
 
 		if ( Object.keys( this.props.orders ).length ) {
 			this.props.orders.forEach( snap => {
-				let data = snap.val();
+				let data        = snap.val();
 				let primaryText = 'Order ' + data.date_added;
-				let rightBtn = <IconButton
+				let nestedItems = [];
+				let details     = this.props.details[ snap.key ];
+				let rightBtn    = <IconButton
 					iconClassName="material-icons"
 					tooltip="Confirm Order"
 					tooltipPosition="top-center"
 					onTouchTap={ () => this.handleConfirmOrder( snap ) }>done_all</IconButton>;
-				let nestedItems = [];
 
-				( this.props.details[ snap.key ] || [] ).map( ( item, index ) => {
+				Object.keys( ( details || {} ) ).map( ( detailsKey, index ) => {
+					let item = details[ detailsKey ];
 					nestedItems.push( <ListItem key={ index }
 						primaryText={ item.name }
 						rightIcon={ <Badge

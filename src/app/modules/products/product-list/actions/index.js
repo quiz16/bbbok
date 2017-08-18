@@ -43,31 +43,15 @@ export function getIncomingOrders () {
 export function getOrderDetails( key ) {
 	return async dispatch => {
 		try {
-			const ref   = firebase.database().ref( 'Products' );
-			let details = {};
+			const ref = firebase.database().ref( 'Products' );
 
 			ref.child( 'Order-add/' + key ).once( 'value', snap => {
-				let keys    = _.keys( snap.val() );
-				let promise = [];
+				const details = snap.val();
 
-				details[ key ] = [];
-
-				keys.forEach( ( indexKey, index ) => {
-					promise.push( ref.child( 'Index/' + indexKey).once( 'value' ) );
-				} )
-
-				Promise.all( promise ).then( response => {
-					response.map( ( dataSnap, index ) => {
-						details[ key ].push( {
-							'quantity' : snap.val()[ keys[ index ] ],
-							'name' : dataSnap.val().name,
-							'key' : keys[ index ]
-						} );
-					} );
-					dispatch( {
-						'type' : GET_ORDER_DETAILS,
-						details
-					} );
+				dispatch( {
+					'type' : GET_ORDER_DETAILS,
+					details,
+					key
 				} );
 			} );
 		} catch ( error ) {

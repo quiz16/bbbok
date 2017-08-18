@@ -59,7 +59,7 @@ export class AddProduct extends React.Component {
 
 	handleAdd () {
 		let self         = this;
-		let state        = Object.assign( {}, self.state );
+		let state        = JSON.parse( JSON.stringify( this.state ) );
 		let keys         = Object.keys( state.isAdded );
 		let order        = {};
 		let total        = 0;
@@ -117,7 +117,7 @@ export class AddProduct extends React.Component {
 
 	handleChangeQuantity ( key ) {
 		return ( e ) => {
-			let state = Object.assign( {}, this.state );
+			let state = JSON.parse( JSON.stringify( this.state ) );
 
 			state.quantity[ key ] = e.target.value;
 
@@ -132,7 +132,7 @@ export class AddProduct extends React.Component {
 	}
 
 	handleAddToCart ( key ) {
-		let state = Object.assign( {}, this.state );
+		let state = JSON.parse( JSON.stringify( this.state ) );
 
 		state.showQuantity[ key ] = !state.showQuantity[ key ];
 		state.isAdded[ key ]      = true;

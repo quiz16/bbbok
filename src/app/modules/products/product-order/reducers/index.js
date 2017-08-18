@@ -21,9 +21,10 @@ export default function productOrderReducer ( state = productOrderState, action 
 				'status' : action.status
 			} );
 		case GET_PRODUCT_DETAILS_ORDER:
-			let obj = Object.assign( {}, state.details );
+			let obj = JSON.parse( JSON.stringify( state.details ) );
 
 			obj[ action.key ] = action.details;
+
 			return Object.assign( {}, state, {
 				'details' : obj
 			} );

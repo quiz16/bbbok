@@ -49,7 +49,7 @@ export class ListProduct extends React.Component {
 
 	onChange ( key ) {
 		return ( e ) => {
-			let state = Object.assign( {}, this.state );
+			let state = JSON.parse( JSON.stringify( this.state ) );
 
 			state[ key ] = e.target.value;
 

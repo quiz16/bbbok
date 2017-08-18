@@ -1,5 +1,6 @@
 import {
-	ADD_PRODUCT
+	ADD_PRODUCT,
+	CLEAR_ADD_PRODUCT_STATE
 } from '../../../../constants';
 import resources from '../resources';
 
@@ -36,6 +37,12 @@ export function addProduct ( body ) {
 		} catch ( error ) {
 			/* Do something with error */
 		}
+	};
+}
+
+export function clearState () {
+	return {
+		'type' : CLEAR_ADD_PRODUCT_STATE
 	};
 }
 

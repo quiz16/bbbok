@@ -63,17 +63,21 @@ export class AddProduct extends React.Component {
 		let keys         = Object.keys( state.isAdded );
 		let order        = {};
 		let total        = 0;
+		let totalQuan    = 0;
 		let orderSummary = [];
 
 		keys.map( key => {
-			if ( !state.quantity[ key ] ) {
+			if ( !+state.quantity[ key ] ) {
 				state.error[ key ] = 'This field is required';
 				self.setState( state );
 				return;
 			}
-			const details   = this.props.details[ key ];
-			const price     = +state.quantity[ key ] * details.retail;
-			const textPrice = <span className="product-dialog-price">Php { numberFormat( price ) }</span>;
+
+			const details     = this.props.details[ key ];
+			const price       = +state.quantity[ key ] * details.retail;
+			const textPrice   = <span className="product-dialog-price">Php { numberFormat( price ) }</span>;
+			const quanLabel   = +state.quantity[ key ] > 1 ? 'pieces' : 'piece';
+			const primaryText = details.name + ' - ' + state.quantity[ key ] + ' ' + quanLabel;
 
 			delete state.error[ key ]
 			self.setState( state );
@@ -83,12 +87,13 @@ export class AddProduct extends React.Component {
 				'quantity' : state.quantity[ key ]
 			};
 
-			total += price;
+			total     += price;
+			totalQuan += +state.quantity[ key ];
 
 			orderSummary.push(
 				<ListItem
 					key={ key }
-					primaryText={ details.name }
+					primaryText={ primaryText }
 					rightIcon={ textPrice } />
 			);
 		} );
@@ -97,7 +102,7 @@ export class AddProduct extends React.Component {
 			orderSummary.push(
 				<ListItem
 					key={ 0 }
-					primaryText={ 'Total' }
+					primaryText={ 'Total - ' + totalQuan + ' pieces' }
 					rightIcon={ <span className="product-dialog-price">Php { numberFormat( total ) }</span> } />
 			);
 
@@ -226,7 +231,9 @@ export class AddProduct extends React.Component {
 			<div className="product-order-wrapper">
 				<Paper zDepth={2}>
 					<div className="product-order-body">
-						<List>{ products }</List>
+						<div className="products-wrapper">
+							<List>{ products }</List>
+						</div>
 						<RaisedButton className="product-form-footer" label="Save Order" onTouchTap={ this.handleAdd.bind( this ) } fullWidth={ true } />
 					</div>
 				</Paper>

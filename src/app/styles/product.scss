@@ -12,6 +12,10 @@
 
 	.product-order-body {
 		padding : 20px;
+		.products-wrapper {
+			max-height : 550px;
+			overflow-x : scroll;
+		}
 	}
 }
 

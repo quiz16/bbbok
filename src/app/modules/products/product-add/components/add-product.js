@@ -11,7 +11,8 @@ import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 
 import {
-	addProduct
+	addProduct,
+	clearState
 } from '../actions';
 export class AddProduct extends React.Component {
 	constructor () {
@@ -37,6 +38,7 @@ export class AddProduct extends React.Component {
 
 	componentWillReceiveProps ( nextProps ) {
 		if ( nextProps.status === 'success' ) {
+			this.props.clearState();
 			this.setState( {
 				'name'      : '',
 				'quantity'  : '',
@@ -146,6 +148,10 @@ function mapsDispatchToProps ( dispatch ) {
 	return {
 		addProduct ( body ) {
 			dispatch( addProduct( body ) );
+		},
+
+		clearState () {
+			dispatch( clearState() );
 		}
 	};
 }

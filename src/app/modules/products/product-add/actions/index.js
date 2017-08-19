@@ -10,8 +10,8 @@ export function addProduct ( body ) {
 			let key = await resources.addProduct( body )
 
 			await resources.addProductIndex( {
-				'name'         : body.name,
-				'last_updated' : body.last_updated
+				'name'     : body.name,
+				'quantity' : body.quantity
 			}, key );
 
 			await resources.addProductCategory( {

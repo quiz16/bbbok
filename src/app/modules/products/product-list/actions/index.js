@@ -1,7 +1,9 @@
 import {
 	GET_PRODUCTS,
 	GET_INCOMING_ORDERS,
-	GET_ORDER_DETAILS
+	GET_ORDER_DETAILS,
+	ORDER_INCOMING_CONFIRM,
+	CLEAR_INCOMING_ORDER_STATE
 } from '../../../../constants';
 
 export function getProducts () {
@@ -47,6 +49,13 @@ export function getOrderDetails( key ) {
 
 			ref.child( 'Order-add/' + key ).once( 'value', snap => {
 				const details = snap.val();
+				let keys      = Object.keys( details );
+
+				keys.map( data => {
+					ref.child( 'Index/' + data ).once( 'value' ).then( res => {
+						details[ data ][ 'total_quantity' ] = ( +res.val().quantity + +details[ data ].quantity ).toString();
+					} );
+				} );
 
 				dispatch( {
 					'type' : GET_ORDER_DETAILS,
@@ -60,15 +69,43 @@ export function getOrderDetails( key ) {
 	};
 }
 
-export function confirmOrder ( key, body ) {
+export function confirmOrder ( key, body, details ) {
 	return async dispatch => {
 		try {
-			firebase.database().ref( 'Products' ).child( 'Order-done' ).child( key ).set( body );
-			firebase.database().ref( 'Products' ).child( 'Order-index' ).child( key ).remove();
-			/* TODO: add confirm order */
+			const ref = firebase.database().ref( 'Products' );
+			let keys  = Object.keys( details );
+
+			ref.child( 'Order-done' ).child( key ).set( body );
+			ref.child( 'Order-index' ).child( key ).remove();
+
+			keys.map( data => {
+				let obj = { 'quantity' : details[ data ].total_quantity };
+
+				ref.child( 'List/' + data ).update( obj );
+				ref.child( 'Index/' + data ).update( obj );
+
+				obj.initiator = 'incoming_order';
+				obj.name      = details[ data ].name
+
+				ref.child( 'History/' + data ).push( obj );
+			} );
+
+			dispatch( {
+				'type'        : ORDER_INCOMING_CONFIRM,
+				'orderStatus' : 'success',
+				'orderName'   : 'Order ' + body.date_added,
+				key
+			} );
 		} catch ( error ) {
 			/* Do something with error */
 		}
+	};
+}
+
+export function clearState ( key ) {
+	return {
+		'type' : CLEAR_INCOMING_ORDER_STATE,
+		key
 	};
 }
 

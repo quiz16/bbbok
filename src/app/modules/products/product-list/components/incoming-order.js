@@ -7,15 +7,17 @@ import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import Badge from 'material-ui/Badge';
 import Snackbar from 'material-ui/Snackbar';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {
 	List,
 	ListItem
 } from 'material-ui/List';
-
 import {
+
 	getIncomingOrders,
 	getOrderDetails,
-	confirmOrder
+	confirmOrder,
+	clearState
 } from '../actions';
 
 export class IncomingOrder extends React.Component {
@@ -29,12 +31,26 @@ export class IncomingOrder extends React.Component {
 			'openSnack'        : false,
 			'messageSnack'     : '',
 			'autoHideDuration' : 4000,
+			'refresh'          : 'loading'
 		} );
 
 		this.props.getIncomingOrders();
 	}
 
 	componentWillReceiveProps ( nextProps ) {
+		if ( nextProps.orderStatus === 'success' ) {
+			this.setState( {
+				'openSnack'    : true,
+				'messageSnack' : nextProps.orderName + ' confirmed!'
+			} );
+			return this.props.clearState( this.props.orderKey );
+		}
+
+		if ( typeof nextProps.orders === 'object' ) {
+			this.setState( {
+				'refresh' : 'hide'
+			} );
+		}
 	}
 
 	onChange ( key ) {
@@ -60,14 +76,15 @@ export class IncomingOrder extends React.Component {
 	}
 
 	handleConfirmOrder ( snap ) {
-		if ( this.props.details[ snap.key ] ) {
+		let productDetails = this.props.details[ snap.key ];
+		if ( productDetails ) {
 			let obj = {
 				'date_confirmed' : dateFormat()
 			};
 
 			let body = Object.assign( obj, snap.val() );
 
-			return this.props.confirmOrder( snap.key, body );
+			return this.props.confirmOrder( snap.key, body, productDetails );
 		}
 		return this.setState( {
 			'openSnack'    : true,
@@ -90,6 +107,16 @@ export class IncomingOrder extends React.Component {
 			},
 			'paper' : {
 				'padding' : '20px'
+			},
+			'spinner' : {
+				'style' : {
+					'boxShadow'  : 'none',
+					'marginLeft' : '50%'
+				},
+				'loadingColor' : 'rgb(255, 64, 129)'
+			},
+			'list' : {
+				'style' : {}
 			}
 		};
 
@@ -128,9 +155,25 @@ export class IncomingOrder extends React.Component {
 				);
 			} );
 		}
+		if ( typeof this.props.orders === 'object' && !this.props.orders.hasChildren() ) {
+			styles.list.style = {
+				'textAlign' : 'center'
+			};
+			orders.push( 'No Orders' );
+		}
+
+
 		return (
 			<Paper zDepth={2} style={ styles.paper }>
-				<List>{ orders }</List>
+				<List style={ styles.list.style }>{ orders }</List>
+				<RefreshIndicator
+					size={ 50 }
+					left={ -25 }
+					top={ 0 }
+					loadingColor={ styles.spinner.loadingColor }
+					status={ this.state.refresh }
+					style={ styles.spinner.style }
+				/>
 				<Snackbar
 					open={ this.state.openSnack }
 					message={ this.state.messageSnack }
@@ -143,8 +186,11 @@ export class IncomingOrder extends React.Component {
 
 function mapsStateToProps ( state ) {
 	return {
-		'orders'  : state.productListReducer.orders,
-		'details' : state.productListReducer.details
+		'orders'      : state.productListReducer.orders,
+		'details'     : state.productListReducer.details,
+		'orderStatus' : state.productListReducer.orderStatus,
+		'orderName'   : state.productListReducer.orderName,
+		'orderKey'    : state.productListReducer.orderKey
 	};
 }
 
@@ -158,8 +204,12 @@ function mapsDispatchToProps ( dispatch ) {
 			dispatch( getOrderDetails( key ) );
 		},
 
-		confirmOrder ( key, body ) {
-			dispatch( confirmOrder( key, body ) );
+		confirmOrder ( key, body, details ) {
+			dispatch( confirmOrder( key, body, details ) );
+		},
+
+		clearState ( key ) {
+			dispatch( clearState( key ) );
 		}
 	};
 }

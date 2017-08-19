@@ -1,16 +1,21 @@
 import {
 	GET_PRODUCTS,
 	GET_INCOMING_ORDERS,
-	GET_ORDER_DETAILS
+	GET_ORDER_DETAILS,
+	ORDER_INCOMING_CONFIRM,
+	CLEAR_INCOMING_ORDER_STATE
 } from '../../../../constants';
 
-const productAddState = {
-	'products' : {},
-	'orders'   : {},
-	'details'  : {}
+const productListState = {
+	'products'    : {},
+	'orders'      : '',
+	'details'     : {},
+	'orderStatus' : 'initial',
+	'orderName'   : '',
+	'orderKey'    : ''
 };
 
-export default function productListReducer ( state = productAddState, action ) {
+export default function productListReducer ( state = productListState, action ) {
 	switch ( action.type ) {
 		case GET_PRODUCTS:
 			return Object.assign( {}, state, {
@@ -27,6 +32,18 @@ export default function productListReducer ( state = productAddState, action ) {
 
 			return Object.assign( {}, state, {
 				'details' : obj
+			} );
+		case ORDER_INCOMING_CONFIRM:
+			return Object.assign( {}, state, {
+				'orderStatus' : action.orderStatus,
+				'orderName'   : action.orderName,
+				'orderKey'    : action.key
+			} );
+		case CLEAR_INCOMING_ORDER_STATE:
+			return Object.assign( {}, state, {
+				'orderStatus' : 'initial',
+				'orderName'   : '',
+				'orderKey'    : ''
 			} );
 		default:
 			return state;

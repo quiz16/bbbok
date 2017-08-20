@@ -83,9 +83,9 @@ export class ListProduct extends React.Component {
 				rows.push(
 					<TableRow key={ snap.key }>
 						<TableRowColumn>{ data.name }</TableRowColumn>
-						<TableRowColumn>{ data.price }</TableRowColumn>
 						<TableRowColumn>{ data.quantity }</TableRowColumn>
-						<TableRowColumn>{ data.category ? 'Face' : 'Body' }</TableRowColumn>
+						<TableRowColumn>{ data.reseller_price }</TableRowColumn>
+						<TableRowColumn>{ data.category ? 'Body' : 'Face' }</TableRowColumn>
 						<TableRowColumn>{ data.change_by }</TableRowColumn>
 						<TableRowColumn>{ data.date_added }</TableRowColumn>
 						<TableRowColumn>{ data.last_updated }</TableRowColumn>

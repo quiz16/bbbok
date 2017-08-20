@@ -17,7 +17,7 @@ export class ListProducts extends React.Component {
 
 	componentWillMount () {
 		this.setState( {
-			'tabValue' : 'incoming'
+			'tabValue' : 'all'
 		} );
 	}
 

@@ -15,6 +15,7 @@ import IconButton from 'material-ui/IconButton';
 import { pinkA200 } from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {
 	List,
 	ListItem
@@ -31,8 +32,6 @@ export class AddProduct extends React.Component {
 	}
 
 	componentWillMount () {
-		this.productCat = [ 'Face', 'Body' ];
-
 		this.setState( {
 			'openSnack'        : false,
 			'autoHideDuration' : 4000,
@@ -41,8 +40,9 @@ export class AddProduct extends React.Component {
 			'isAdded'          : {},
 			'openDialog'       : false,
 			'orderSummary'     : '',
-			'error'            : {}
-
+			'error'            : {},
+			'disableSave'      : true,
+			'refresh'          : 'loading'
 		} );
 
 		this.props.getProducts();
@@ -53,6 +53,12 @@ export class AddProduct extends React.Component {
 			this.setState( {
 				'openSnack'  : true,
 				'openDialog' : false
+			} );
+		}
+
+		if ( typeof nextProps.products === 'object' ) {
+			this.setState( {
+				'refresh' : 'hide'
 			} );
 		}
 	}
@@ -68,7 +74,8 @@ export class AddProduct extends React.Component {
 
 		keys.map( key => {
 			if ( !+state.quantity[ key ] ) {
-				state.error[ key ] = 'This field is required';
+				state.error[ key ]        = 'This field is required';
+				state.showQuantity[ key ] = true; // open the dropdown
 				self.setState( state );
 				return;
 			}
@@ -136,6 +143,7 @@ export class AddProduct extends React.Component {
 
 		state.showQuantity[ key ] = !state.showQuantity[ key ];
 		state.isAdded[ key ]      = true;
+		state.disableSave         = false;
 		this.setState( state );
 		this.props.getProductDetails( key );
 	}
@@ -170,7 +178,14 @@ export class AddProduct extends React.Component {
 				'underline' : {
 					'bottom' : 'none'
 				}
-			}
+			},
+			'spinner' : {
+				'style' : {
+					'boxShadow'  : 'none',
+					'marginLeft' : '50%'
+				},
+				'loadingColor' : 'rgb(255, 64, 129)'
+			},
 		};
 
 		const actions = [
@@ -187,7 +202,6 @@ export class AddProduct extends React.Component {
 
 		let messageSnack = 'Order Added';
 		let products     = [];
-		let category     = [];
 
 		if ( Object.keys( this.props.products ).length ) {
 			this.props.products.forEach( snap => {
@@ -222,19 +236,28 @@ export class AddProduct extends React.Component {
 			} );
 		}
 
-		this.productCat.map( ( item, index ) => {
-			category.push( <MenuItem key={ index } value={ index } primaryText={ item } /> );
-
-		} );
-
 		return (
 			<div className="product-order-wrapper">
 				<Paper zDepth={2}>
 					<div className="product-order-body">
 						<div className="products-wrapper">
 							<List>{ products }</List>
+							<RefreshIndicator
+								size={ 50 }
+								left={ -25 }
+								top={ 0 }
+								loadingColor={ styles.spinner.loadingColor }
+								status={ this.state.refresh }
+								style={ styles.spinner.style }
+							/>
 						</div>
-						<RaisedButton className="product-form-footer" label="Save Order" onTouchTap={ this.handleAdd.bind( this ) } fullWidth={ true } />
+						<RaisedButton
+							className="product-form-footer"
+							label="Save Order"
+							fullWidth={ true }
+							disabled={ this.state.disableSave }
+							onTouchTap={ this.handleAdd.bind( this ) }
+						/>
 					</div>
 				</Paper>
 				<Snackbar

@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Badge from 'material-ui/Badge';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {
 	Table,
 	TableBody,
@@ -30,21 +31,21 @@ export class ListProduct extends React.Component {
 	}
 
 	componentWillMount () {
-		this.tableHeaders = [ 'Name', 'Quantity', 'Price', 'Category', 'Updated By', 'Date Added', 'Date Updated', 'Actions' ];
+		this.tableHeaders = [ 'Name', 'Quantity', 'Price' ];
 
 		this.setState( {
-			'name'             : '',
-			'quantity'         : '',
-			'price'            : '',
-			'category'         : '',
-			'change_by'        : '',
-			'last_updated'     : null,
-			'openSnack'        : false,
-			'autoHideDuration' : 4000,
-			'tempName'         : ''
+			'refresh' : 'loading'
 		} );
 
 		this.props.getProducts();
+	}
+
+	componentWillReceiveProps( nextProps ) {
+		if ( typeof nextProps.products === 'object' ) {
+			this.setState( {
+				'refresh' : 'hide'
+			} );
+		}
 	}
 
 	onChange ( key ) {
@@ -57,10 +58,10 @@ export class ListProduct extends React.Component {
 		}
 	}
 
-	handleRequestClose () {
-		this.setState( {
-			'openSnack' : false
-		} );
+	handleRowSelect ( row ) {
+		let key = Object.keys( this.props.products.val() )[ row[ 0 ] ];
+
+		return this.props.goToView( key );
 	}
 
 	handleOrder () {
@@ -71,9 +72,27 @@ export class ListProduct extends React.Component {
 		let headers  = [];
 		let rows     = [];
 		let category = [];
+		let styles   = {
+			'table' : {
+				'body' : {
+					'maxHeight' : '550px',
+					'minHeight' : '58px'
+				},
+				'style' : {
+					'textAlign' : 'center'
+				}
+			},
+			'spinner' : {
+				'style' : {
+					'boxShadow'  : 'none',
+					'marginLeft' : '50%'
+				},
+				'loadingColor' : 'rgb(255, 64, 129)'
+			},
+		};
 
 		this.tableHeaders.map( ( item, index ) => {
-			headers.push( <TableHeaderColumn key={ index }>{ item }</TableHeaderColumn> );
+			headers.push( <TableHeaderColumn key={ index } style={ styles.table.style }>{ item }</TableHeaderColumn> );
 		} );
 
 		if ( Object.keys( this.props.products ).length ) {
@@ -82,23 +101,9 @@ export class ListProduct extends React.Component {
 
 				rows.push(
 					<TableRow key={ snap.key }>
-						<TableRowColumn>{ data.name }</TableRowColumn>
-						<TableRowColumn>{ data.quantity }</TableRowColumn>
-						<TableRowColumn>{ data.reseller_price }</TableRowColumn>
-						<TableRowColumn>{ data.category ? 'Body' : 'Face' }</TableRowColumn>
-						<TableRowColumn>{ data.change_by }</TableRowColumn>
-						<TableRowColumn>{ data.date_added }</TableRowColumn>
-						<TableRowColumn>{ data.last_updated }</TableRowColumn>
-						<TableRowColumn>
-							<IconButton tooltip="Edit" tooltipPosition="top-center" iconClassName="material-icons" onTouchTap={ () => this.props.goToEdit( snap.key ) } >edit</IconButton>
-							<Badge
-								badgeContent={10}
-								secondary={true}
-								badgeStyle={{top: 12, right: 12}}
-							>
-								<IconButton tooltip="Order" tooltipPosition="top-center" iconClassName="material-icons" onTouchTap={ () => this.props.addOrder( snap.key ) } >add_shopping_cart</IconButton>
-							</Badge>
-						</TableRowColumn>
+						<TableRowColumn style={ styles.table.style }>{ data.quantity }</TableRowColumn>
+						<TableRowColumn style={ styles.table.style }>{ data.name }</TableRowColumn>
+						<TableRowColumn style={ styles.table.style }>{ data.reseller_price }</TableRowColumn>
 					</TableRow>
 				);
 			} );
@@ -106,14 +111,30 @@ export class ListProduct extends React.Component {
 
 		return (
 			<Paper zDepth={2}>
-				<Table multiSelectable={ true }>
-					<TableHeader>
-						<TableRow children={ headers }></TableRow>
+				<Table
+					selectable={ true }
+					bodyStyle={ styles.table.body }
+					onRowSelection={ this.handleRowSelect.bind( this ) }
+					fixedHeader={ true }>
+					<TableHeader
+						displaySelectAll={ false }
+						adjustForCheckbox={ false }>
+							<TableRow children={ headers }></TableRow>
 					</TableHeader>
-					<TableBody>
+					<TableBody
+						displayRowCheckbox={ false }
+						stripedRows={ true }>
 						{ rows }
 					</TableBody>
 				</Table>
+				<RefreshIndicator
+					size={ 50 }
+					left={ -25 }
+					top={ 60 }
+					loadingColor={ styles.spinner.loadingColor }
+					status={ this.state.refresh }
+					style={ styles.spinner.style }
+				/>
 			</Paper>
 		);
 	}
@@ -131,8 +152,8 @@ function mapsDispatchToProps ( dispatch ) {
 			dispatch( getProducts() );
 		},
 
-		goToEdit ( key ) {
-			dispatch( push( '/products/edit/' + key ) );
+		goToView ( key ) {
+			dispatch( push( '/products/view/' + key ) );
 		},
 
 		addOrder ( key ) {

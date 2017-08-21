@@ -9,7 +9,7 @@ import {
 export function getProducts () {
 	return async dispatch => {
 		try {
-			const ref = firebase.database().ref( 'Products' ).child( 'List' );
+			const ref = firebase.database().ref( 'Products' ).child( 'Index' );
 
 			ref.on( 'value', snap => {
 				dispatch( {

@@ -7,7 +7,7 @@ import {
 } from '../../../../constants';
 
 const productListState = {
-	'products'    : {},
+	'products'    : [],
 	'orders'      : '',
 	'details'     : {},
 	'orderStatus' : 'initial',

@@ -28,6 +28,10 @@ export class Header extends React.Component {
 		} );
 	}
 
+	handleLogout () {
+		firebase.auth().signOut();
+	}
+
 	render () {
 		return (
 			<div className="header-wrapper">
@@ -39,6 +43,7 @@ export class Header extends React.Component {
 					onRequestChange={ ( open ) => this.setState( { open } ) } >
 					<MenuItem onTouchTap={ this.handleClose.bind( this ) } >Menu Item</MenuItem>
 					<MenuItem onTouchTap={ this.handleClose.bind( this ) } >Menu Item 2</MenuItem>
+					<MenuItem onTouchTap={ this.handleLogout } >Logout</MenuItem>
 				</Drawer>
 			</div>
 		);

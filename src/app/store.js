@@ -11,6 +11,7 @@ import { browserHistory } from 'react-router';
 import productAddReducer from './modules/products/product-add/reducers';
 import productListReducer from './modules/products/product-list/reducers';
 import productOrderReducer from './modules/products/product-order/reducers';
+import productViewReducer from './modules/products/product-view/reducers';
 
 // Initialize store
 let store;
@@ -26,6 +27,7 @@ export default () => {
 		productAddReducer,
 		productListReducer,
 		productOrderReducer,
+		productViewReducer,
 		'routing' : routerReducer
 	};
 

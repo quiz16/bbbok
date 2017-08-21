@@ -21,6 +21,7 @@ import Dashboard from './modules/dashboard';
 import ProductsAdd from './modules/products/product-add';
 import ProductsList from './modules/products/product-list';
 import ProductsAddOrder from './modules/products/product-order';
+import ProductView from './modules/products/product-view';
 
 export default (
 	<Router history={ history }>
@@ -31,6 +32,7 @@ export default (
 			</Route>
 			<Route path="/products" component={ ProductsList } onEnter={ auth.requireAuth } />
 			<Route path="/products/add" component={ ProductsAdd } onEnter={ auth.requireAuth } />
+			<Route path="/products/view/:id" component={ ProductView } onEnter={ auth.requireAuth } />
 			<Route path="/products/edit/:id" component={ ProductsAdd } onEnter={ auth.requireAuth } />
 			<Route path="/products/add-order" component={ ProductsAddOrder } onEnter={ auth.requireAuth } />
 		</div>

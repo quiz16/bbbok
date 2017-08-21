@@ -21,7 +21,7 @@
 	}
 }
 
-.product-list-wrapper {
+.product-list-wrapper, .product-view-wrapper {
 	margin : 0 auto;
 	width  : 90%;
 }
@@ -29,4 +29,10 @@
 .product-dialog-price {
   width      : 200px !important;
   text-align : right;
+}
+
+.product-view-wrapper {
+	.details-wrapper {
+		padding : 40px;
+	}
 }

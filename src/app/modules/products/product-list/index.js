@@ -7,7 +7,10 @@ import ProductList from './components/list-product.js';
 import ProductOrders from './components/incoming-order.js';
 
 import RaisedButton from 'material-ui/RaisedButton';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import {
+	Tabs,
+	Tab
+} from 'material-ui/Tabs';
 
 
 export class ListProducts extends React.Component {

@@ -12,12 +12,13 @@ import {
 	List,
 	ListItem
 } from 'material-ui/List';
-import {
 
+import {
 	getIncomingOrders,
 	getOrderDetails,
 	confirmOrder,
-	clearState
+	clearState,
+	offListener
 } from '../actions';
 
 export class IncomingOrder extends React.Component {
@@ -37,6 +38,10 @@ export class IncomingOrder extends React.Component {
 		this.props.getIncomingOrders();
 	}
 
+	componentWillUnmount () {
+		this.props.offListener( 'Order-index' );
+	}
+
 	componentWillReceiveProps ( nextProps ) {
 		if ( nextProps.orderStatus === 'success' ) {
 			this.setState( {
@@ -50,16 +55,6 @@ export class IncomingOrder extends React.Component {
 			this.setState( {
 				'refresh' : 'hide'
 			} );
-		}
-	}
-
-	onChange ( key ) {
-		return ( e ) => {
-			let state = JSON.parse( JSON.stringify( this.state ) );
-
-			state[ key ] = e.target.value;
-
-			this.setState( state );
 		}
 	}
 
@@ -210,6 +205,10 @@ function mapsDispatchToProps ( dispatch ) {
 
 		clearState ( key ) {
 			dispatch( clearState( key ) );
+		},
+
+		offListener ( key ) {
+			dispatch( offListener( key ) );
 		}
 	};
 }

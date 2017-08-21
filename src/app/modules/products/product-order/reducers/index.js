@@ -1,7 +1,8 @@
 import {
 	GET_PRODUCTS,
 	ADD_ORDER,
-	GET_PRODUCT_DETAILS_ORDER
+	GET_PRODUCT_DETAILS_ORDER,
+	OFF
 } from '../../../../constants';
 
 const productOrderState = {
@@ -28,6 +29,8 @@ export default function productOrderReducer ( state = productOrderState, action 
 			return Object.assign( {}, state, {
 				'details' : obj
 			} );
+		case OFF:
+			return Object.assign( {}, state, productOrderState );
 		default:
 			return state;
 	}

@@ -9,8 +9,6 @@ import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import { pinkA200 } from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
@@ -24,7 +22,8 @@ import {
 import {
 	getProducts,
 	addOrder,
-	getProductDetails
+	getProductDetails,
+	offListener
 } from '../actions';
 export class AddProduct extends React.Component {
 	constructor () {
@@ -46,6 +45,10 @@ export class AddProduct extends React.Component {
 		} );
 
 		this.props.getProducts();
+	}
+
+	componentWillUnmount () {
+		this.props.offListener();
 	}
 
 	componentWillReceiveProps ( nextProps ) {
@@ -297,6 +300,10 @@ function mapsDispatchToProps ( dispatch ) {
 
 		getProductDetails ( key ) {
 			dispatch( getProductDetails( key ) );
+		},
+
+		offListener () {
+			dispatch( offListener() );
 		}
 	};
 }

@@ -3,7 +3,8 @@ import {
 	GET_INCOMING_ORDERS,
 	GET_ORDER_DETAILS,
 	ORDER_INCOMING_CONFIRM,
-	CLEAR_INCOMING_ORDER_STATE
+	CLEAR_INCOMING_ORDER_STATE,
+	OFF
 } from '../../../../constants';
 
 const productListState = {
@@ -45,6 +46,8 @@ export default function productListReducer ( state = productListState, action ) 
 				'orderName'   : '',
 				'orderKey'    : ''
 			} );
+		case OFF:
+			return Object.assign( {}, state, productListState );
 		default:
 			return state;
 	}

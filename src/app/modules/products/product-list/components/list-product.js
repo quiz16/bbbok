@@ -2,14 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
-import Snackbar from 'material-ui/Snackbar';
-import IconButton from 'material-ui/IconButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Badge from 'material-ui/Badge';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {
 	Table,
@@ -22,7 +15,8 @@ import {
 
 import {
 	getProducts,
-	addOrder
+	addOrder,
+	offListener
 } from '../actions';
 
 export class ListProduct extends React.Component {
@@ -48,24 +42,14 @@ export class ListProduct extends React.Component {
 		}
 	}
 
-	onChange ( key ) {
-		return ( e ) => {
-			let state = JSON.parse( JSON.stringify( this.state ) );
-
-			state[ key ] = e.target.value;
-
-			this.setState( state );
-		}
+	componentWillUnmount () {
+		this.props.offListener( 'Index' );
 	}
 
 	handleRowSelect ( row ) {
 		let key = Object.keys( this.props.products.val() )[ row[ 0 ] ];
 
 		return this.props.goToView( key );
-	}
-
-	handleOrder () {
-		console.log( this );
 	}
 
 	render () {
@@ -158,6 +142,10 @@ function mapsDispatchToProps ( dispatch ) {
 
 		addOrder ( key ) {
 			dispatch( addOrder( key ) );
+		},
+
+		offListener ( key  ) {
+			dispatch( offListener( key ) );
 		}
 	};
 }

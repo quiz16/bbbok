@@ -40,6 +40,28 @@ export class AddProduct extends React.Component {
 	}
 
 	componentWillMount () {
+		this.names = [ {
+			'label' : 'Name',
+			'key'   : 'name'
+		}, {
+			'label' : 'Quantity',
+			'key'   : 'quantity'
+		}, {
+			'label' : 'Price',
+			'key'   : 'reseller_price'
+		}, {
+			'label' : 'Category',
+			'key'   : 'category'
+		}, {
+			'label' : 'Updated By',
+			'key'   : 'change_by'
+		}, {
+			'label' : 'Date Added',
+			'key'   : 'date_added'
+		}, {
+			'label' : 'Date Updated',
+			'key'   : 'last_updated'
+		} ];
 		this.setState( {
 			'refresh' : 'loading'
 		} );
@@ -62,30 +84,8 @@ export class AddProduct extends React.Component {
 
 	render () {
 		let rows    = [];
-		let names   = [ {
-			'label' : 'Name',
-			'key'   : 'name'
-		}, {
-			'label' : 'Quantity',
-			'key'   : 'quantity'
-		}, {
-			'label' : 'Price',
-			'key'   : 'reseller_price'
-		}, {
-			'label' : 'Category',
-			'key'   : 'category'
-		}, {
-			'label' : 'Updated By',
-			'key'   : 'change_by'
-		}, {
-			'label' : 'Date Added',
-			'key'   : 'date_added'
-		}, {
-			'label' : 'Date Updated',
-			'key'   : 'last_updated'
-		} ];
 		let details = this.props.details;
-		let styles   = {
+		let styles  = {
 			'table' : {
 				'body' : {
 					'maxHeight' : '550px',
@@ -105,7 +105,7 @@ export class AddProduct extends React.Component {
 		};
 
 		if ( Object.keys( details ).length ) {
-			names.map( ( item, index ) => {
+			this.names.map( ( item, index ) => {
 				let value = details[ item.key ];
 
 				if ( item.label === 'Category' ) {

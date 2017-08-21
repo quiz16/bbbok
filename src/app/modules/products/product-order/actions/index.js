@@ -1,7 +1,8 @@
 import {
 	GET_PRODUCTS,
 	ADD_ORDER,
-	GET_PRODUCT_DETAILS_ORDER
+	GET_PRODUCT_DETAILS_ORDER,
+	OFF
 } from '../../../../constants';
 import resources from '../resources';
 
@@ -77,6 +78,13 @@ export function getProductDetails ( key ) {
 		} catch ( error ) {
 			/* Do something with error */
 		}
+	};
+}
+
+export function offListener () {
+	firebase.database().ref( 'Products' ).child( 'List' ).child( 'Index' ).off();
+	return {
+		'type' : OFF
 	};
 }
 

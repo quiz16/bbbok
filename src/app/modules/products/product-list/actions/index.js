@@ -3,7 +3,8 @@ import {
 	GET_INCOMING_ORDERS,
 	GET_ORDER_DETAILS,
 	ORDER_INCOMING_CONFIRM,
-	CLEAR_INCOMING_ORDER_STATE
+	CLEAR_INCOMING_ORDER_STATE,
+	OFF
 } from '../../../../constants';
 
 export function getProducts () {
@@ -109,3 +110,9 @@ export function clearState ( key ) {
 	};
 }
 
+export function offListener ( key ) {
+	firebase.database().ref( 'Products' ).child( 'List' ).child( key ).off();
+	return {
+		'type' : OFF
+	};
+}

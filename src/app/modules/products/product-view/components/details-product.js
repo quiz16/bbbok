@@ -5,26 +5,11 @@ import {
 	dateFormat
 } from '../../../../helper';
 
-import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
-import Snackbar from 'material-ui/Snackbar';
-import RaisedButton from 'material-ui/RaisedButton';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import { pinkA200 } from 'material-ui/styles/colors';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-import {
-	List,
-	ListItem
-} from 'material-ui/List';
 import {
 	Table,
 	TableBody,
-	TableHeader,
-	TableHeaderColumn,
 	TableRow,
 	TableRowColumn,
 } from 'material-ui/Table';

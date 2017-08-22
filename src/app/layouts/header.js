@@ -5,6 +5,8 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 
+import auth from '../auth';
+
 export class Header extends React.Component {
 	constructor () {
 		super();
@@ -17,9 +19,11 @@ export class Header extends React.Component {
 	}
 
 	toggleDrawer () {
-		this.setState( {
-			'open' : true
-		} );
+		if ( auth.getUser() ) {
+			this.setState( {
+				'open' : true
+			} );
+		}
 	}
 
 	handleClose () {

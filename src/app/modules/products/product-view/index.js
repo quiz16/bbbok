@@ -3,11 +3,16 @@ import { connect } from 'react-redux';
 
 import Header from '../../../layouts/header';
 import ProductDetails from './components/details-product.js';
+import ProductHistory from './components/history-product.js';
 
 import {
 	Tabs,
 	Tab
 } from 'material-ui/Tabs';
+
+import {
+	getHistory,
+} from './actions';
 
 export class ProductView extends React.Component {
 	constructor () {
@@ -15,6 +20,7 @@ export class ProductView extends React.Component {
 	}
 
 	componentWillMount () {
+		this.isclick = false;
 		this.setState( {
 			'tabValue' : 'details'
 		} );
@@ -26,6 +32,13 @@ export class ProductView extends React.Component {
 		} );
 	}
 
+	handleActive ( tab ) {
+		if ( !this.isclick ) {
+			this.props.getHistory( this.props.params.id );
+			this.isclick = true;
+		}
+	}
+
 	render () {
 		return (
 			<div>
@@ -35,8 +48,8 @@ export class ProductView extends React.Component {
 						<Tab label="Product Details" value="details">
 							<ProductDetails id={ this.props.params.id } />
 						</Tab>
-						<Tab label="History" value="history">
-							temporary history
+						<Tab label="History" value="history" onActive={ this.handleActive.bind( this, 'history' ) }>
+							<ProductHistory history={ this.props.history } id={ this.props.params.id } />
 						</Tab>
 					</Tabs>
 				</div>
@@ -47,11 +60,15 @@ export class ProductView extends React.Component {
 
 export function mapsStateToProps ( state ) {
 	return {
+		'history' : state.productViewReducer.history
 	};
 }
 
 export function mapsDispatchToProps ( dispatch ) {
 	return {
+		getHistory ( key ) {
+			dispatch( getHistory( key ) );
+		}
 	};
 }
 

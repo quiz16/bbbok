@@ -19,7 +19,7 @@ import {
 	offListener
 } from '../actions';
 
-export class AddProduct extends React.Component {
+export class DetailsProduct extends React.Component {
 	constructor () {
 		super();
 	}
@@ -55,7 +55,7 @@ export class AddProduct extends React.Component {
 	}
 
 	componentWillUnmount () {
-		this.props.offListener( this.props.id );
+		this.props.offListener( 'List', this.props.id );
 	}
 
 	componentWillReceiveProps ( nextProps ) {
@@ -143,10 +143,10 @@ function mapsDispatchToProps ( dispatch ) {
 			dispatch( getProduct( key ) );
 		},
 
-		offListener ( key ) {
-			dispatch( offListener( key ) );
+		offListener ( keyPar, key ) {
+			dispatch( offListener( keyPar, key ) );
 		}
 	};
 }
 
-export default connect( mapsStateToProps, mapsDispatchToProps )( AddProduct );
+export default connect( mapsStateToProps, mapsDispatchToProps )( DetailsProduct );

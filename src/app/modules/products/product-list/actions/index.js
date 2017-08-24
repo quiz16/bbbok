@@ -85,8 +85,9 @@ export function confirmOrder ( key, body, details ) {
 				ref.child( 'List/' + data ).update( obj );
 				ref.child( 'Index/' + data ).update( obj );
 
-				obj.initiator = 'incoming_order';
-				obj.name      = details[ data ].name
+				obj.initiator  = 'incoming_order';
+				obj.name       = details[ data ].name;
+				obj.date_added = body.date_confirmed;
 
 				ref.child( 'History/' + data ).push( obj );
 			} );

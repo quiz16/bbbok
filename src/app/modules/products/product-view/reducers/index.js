@@ -1,10 +1,12 @@
 import {
 	GET_DETAILS,
+	GET_HISTORY,
 	OFF
 } from '../../../../constants';
 
 const productViewState = {
-	'details' : {}
+	'details' : {},
+	'history' : {}
 };
 
 export default function productViewReducer ( state = productViewState, action ) {
@@ -15,6 +17,10 @@ export default function productViewReducer ( state = productViewState, action ) 
 			} );
 		case OFF:
 			return Object.assign( {}, state, productViewState );
+		case GET_HISTORY:
+			return Object.assign( {}, state, {
+				'history' : action.history
+			} );
 		default:
 			return state;
 	}
